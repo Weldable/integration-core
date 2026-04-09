@@ -4,7 +4,7 @@
  * The Weldable runtime catches these specific error types to determine
  * the correct response behavior:
  *
- *   IntegrationAuthError       → return matched + connected: false + connect_url
+ *   IntegrationAuthError       → return not_connected + connect_url
  *   IntegrationRateLimitError  → return error with retryAfter hint
  *   IntegrationValidationError → return error (bad input, do not retry)
  *   IntegrationApiError        → return error (upstream API failure)
