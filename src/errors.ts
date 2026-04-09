@@ -15,10 +15,25 @@
 
 export class IntegrationAuthError extends Error {
   readonly code = 'AUTH_ERROR' as const
+  readonly integrationSlug?: string
 
-  constructor(message = 'Authentication failed or expired') {
+  constructor(message = 'Authentication failed or expired', opts: { integrationSlug?: string } = {}) {
     super(message)
     this.name = 'IntegrationAuthError'
+    this.integrationSlug = opts.integrationSlug
+  }
+}
+
+export class IntegrationBillingError extends Error {
+  readonly code = 'BILLING_ERROR' as const
+  readonly integrationSlug?: string
+  readonly billingUrl?: string
+
+  constructor(message: string, opts: { integrationSlug?: string; billingUrl?: string } = {}) {
+    super(message)
+    this.name = 'IntegrationBillingError'
+    this.integrationSlug = opts.integrationSlug
+    this.billingUrl = opts.billingUrl
   }
 }
 

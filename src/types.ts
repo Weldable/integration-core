@@ -216,6 +216,11 @@ export interface IntegrationDef {
    */
   botTokenEnvVar?: string
   actions: ActionDef[]
+  /**
+   * URL for the integration's billing console (e.g., 'https://console.anthropic.com/settings/billing').
+   * Used to populate billing_url in IntegrationBillingError CTAs.
+   */
+  billingUrl?: string
   /** Nango OAuth provider name. Defaults to the integration slug if omitted. */
   nangoProvider?: string
   /** Comma-separated OAuth scopes (required for OAuth integrations) */

@@ -23,6 +23,7 @@ export type {
 // Errors
 export {
   IntegrationAuthError,
+  IntegrationBillingError,
   IntegrationRateLimitError,
   IntegrationValidationError,
   IntegrationApiError,
