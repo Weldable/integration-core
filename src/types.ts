@@ -192,7 +192,7 @@ export interface IntegrationDef {
   /** Lowercase snake_case identifier (e.g., 'slack', 'google_sheets') */
   id: IntegrationId
   /** Schema version — allows the runtime to know what capabilities are declared */
-  version: 1
+  version: 1 | 2
   name: string
   description: string
   /** Icon identifier (used by Weldable UI to render the branded icon) */
