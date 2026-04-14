@@ -1,10 +1,15 @@
 import type { IntegrationDef, Integration } from './types'
+import { createDefaultMock } from './mock-synth'
 
 /**
  * Type-safe factory for defining a Weldable integration.
  *
  * Compiles author-facing ActionDef (with actionId) into runtime Action (with composite id).
  * e.g. integration id 'slack' + actionId 'post_message' → action id 'slack.post_message'.
+ *
+ * Also ensures every compiled Action has a non-null mockExecute: if the ActionDef
+ * omits mockExecute, defineIntegration() attaches a deterministic synthesizer derived
+ * from the action's outputFields.
  *
  * Throws on duplicate actionId values within an integration (fail-fast, caught at startup).
  *
@@ -34,6 +39,7 @@ export function defineIntegration(def: IntegrationDef): Integration {
     actions: def.actions.map(({ actionId, ...rest }) => ({
       ...rest,
       id: `${def.id}.${actionId}`,
+      mockExecute: rest.mockExecute ?? createDefaultMock(rest.outputFields),
     })),
   }
 }

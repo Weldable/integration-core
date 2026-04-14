@@ -45,6 +45,16 @@ export interface ActionDef {
   outputFields?: OutputField[]
   /** Execution handler for this action. Required for REST/SDK actions. */
   execute?: ActionHandler
+  /**
+   * Optional mock handler. When present, overrides the default synthesizer that
+   * generates a response from outputFields. Use this for actions where realistic
+   * output shape (e.g. nested arrays) matters for workflow authoring.
+   *
+   * If absent, defineIntegration() attaches a deterministic synthesizer derived
+   * from outputFields automatically — so every compiled Action.mockExecute is
+   * always non-null.
+   */
+  mockExecute?: MockActionHandler
 }
 
 /**
@@ -53,15 +63,50 @@ export interface ActionDef {
  * `id` is the composite identifier set automatically by defineIntegration():
  * `${integration.id}.${actionDef.actionId}` (e.g. 'slack.post_message').
  * Do not set this field manually.
+ *
+ * `mockExecute` is always non-null on a compiled Action: defineIntegration()
+ * attaches the default outputFields synthesizer when the ActionDef omits it.
  */
 export interface Action extends Omit<ActionDef, 'actionId'> {
   /** Composite action id: `${integration.id}.${actionId}` (e.g. 'slack.post_message'). Set by defineIntegration(). */
   id: string
+  /** Always non-null on a compiled Action. Set by defineIntegration(). */
+  mockExecute: MockActionHandler
 }
 
 export type ActionHandler = (
   args: Record<string, unknown>,
   ctx: ActionContext
+) => Promise<Record<string, unknown>>
+
+// ---------------------------------------------------------------------------
+// Mock execution types
+// ---------------------------------------------------------------------------
+
+/**
+ * Context passed to MockActionHandler.
+ *
+ * Intentionally minimal: no HTTP client, no credentials, no Supabase.
+ * Mocks are pure functions of (args, seed) — no external dependencies allowed.
+ */
+export interface MockActionContext {
+  /**
+   * Deterministic PRNG seed (string). The caller (CLI / test harness) derives
+   * this from the workflow run id, step path, iteration index, and branch name
+   * — the same components used for idempotency keys. Same seed → same output.
+   */
+  seed: string
+  log: (message: string) => void
+}
+
+/**
+ * Mock execution handler. Must be a pure function of (args, ctx.seed).
+ * Never call Math.random(), Date.now(), or any I/O inside a mock handler.
+ * Use the helpers in @weldable/integration-core/mock-helpers instead.
+ */
+export type MockActionHandler = (
+  args: Record<string, unknown>,
+  ctx: MockActionContext
 ) => Promise<Record<string, unknown>>
 
 export interface ActionContext {

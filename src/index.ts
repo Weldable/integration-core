@@ -8,6 +8,8 @@ export type {
   ActionId,
   ActionHandler,
   ActionContext,
+  MockActionContext,
+  MockActionHandler,
   HttpClient,
   HttpResponse,
   RequestOptions,
@@ -35,3 +37,17 @@ export type { RestConfig, RestSpec } from './rest'
 
 // Factory
 export { defineIntegration } from './define'
+
+// Mock synthesis (for use in defineIntegration internals and integration packages)
+export { synthesizeFromOutputFields, createDefaultMock } from './mock-synth'
+
+// Mock fixture helpers (for handwritten mockExecute overrides)
+export {
+  deriveSeed,
+  fakeEmail,
+  fakeUrl,
+  fakeId,
+  fakeSlackTs,
+  fakeIsoTimestamp,
+  fakeArray,
+} from './mock-helpers'

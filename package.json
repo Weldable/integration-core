@@ -15,6 +15,10 @@
     "./testing": {
       "import": "./dist/testing.js",
       "types": "./dist/testing.d.ts"
+    },
+    "./mock-helpers": {
+      "import": "./dist/mock-helpers.js",
+      "types": "./dist/mock-helpers.d.ts"
     }
   },
   "scripts": {
