@@ -1,10 +1,25 @@
 {
   "name": "@weldable/integration-core",
-  "private": true,
   "version": "1.0.0",
   "description": "Types, helpers, and utilities for building Weldable integrations",
   "type": "module",
   "license": "MIT",
+  "author": "Weldable",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weldable/integration-core.git"
+  },
+  "homepage": "https://github.com/weldable/integration-core#readme",
+  "bugs": {
+    "url": "https://github.com/weldable/integration-core/issues"
+  },
+  "keywords": [
+    "weldable",
+    "integration",
+    "mcp",
+    "ai",
+    "automation"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -23,7 +38,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "prepublishOnly": "tsc"
   },
   "devDependencies": {
     "typescript": "^5.0.0"
@@ -32,8 +48,7 @@
     "node": ">=18"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"

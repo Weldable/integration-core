@@ -1,6 +1,4 @@
-import type { IntegrationDef, Integration } from './types.js'
-import { createDefaultMock } from './mock-synth.js'
-
+import type { IntegrationDef, Integration } from './types.js';
 /**
  * Type-safe factory for defining a Weldable integration.
  *
@@ -23,23 +21,5 @@ import { createDefaultMock } from './mock-synth.js'
  *     ],
  *   })
  */
-export function defineIntegration(def: IntegrationDef): Integration {
-  const seen = new Set<string>()
-  for (const action of def.actions) {
-    if (seen.has(action.actionId)) {
-      throw new Error(
-        `[defineIntegration] Duplicate actionId '${action.actionId}' in integration '${def.id}'. ` +
-        `Each action must have a unique actionId.`
-      )
-    }
-    seen.add(action.actionId)
-  }
-  return {
-    ...def,
-    actions: def.actions.map(({ actionId, ...rest }) => ({
-      ...rest,
-      id: `${def.id}.${actionId}`,
-      mockExecute: rest.mockExecute ?? createDefaultMock(rest.outputFields),
-    })),
-  }
-}
+export declare function defineIntegration(def: IntegrationDef): Integration;
+//# sourceMappingURL=define.d.ts.map

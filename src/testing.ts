@@ -6,7 +6,7 @@
  *   import { createMockContext, MockHttpClient } from '@weldable/integration-core/testing'
  */
 
-import type { ActionContext, HttpClient, HttpResponse, RequestOptions } from './types'
+import type { ActionContext, HttpClient, HttpResponse, RequestOptions } from './types.js'
 
 // ---------------------------------------------------------------------------
 // MockHttpClient

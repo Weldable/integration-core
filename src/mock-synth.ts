@@ -14,7 +14,7 @@
  * When `outputFields` is undefined, returns `{}`.
  */
 
-import type { MockActionContext, MockActionHandler, OutputField } from './types'
+import type { MockActionContext, MockActionHandler, OutputField } from './types.js'
 
 // ---------------------------------------------------------------------------
 // Seedable PRNG (mulberry32 — public domain, 20 lines, no runtime dependency)

@@ -1,5 +1,5 @@
-import type { ActionHandler, HttpResponse } from './types'
-import { IntegrationAuthError, IntegrationRateLimitError, IntegrationValidationError, IntegrationApiError } from './errors'
+import type { ActionHandler, HttpResponse } from './types.js'
+import { IntegrationAuthError, IntegrationRateLimitError, IntegrationValidationError, IntegrationApiError } from './errors.js'
 
 // ---------------------------------------------------------------------------
 // REST helper types
@@ -159,4 +159,4 @@ export function createRestHandler(config: RestConfig = {}): (spec: RestSpec) => 
 }
 
 // Re-export for convenience in integration packages
-export { IntegrationApiError } from './errors'
+export { IntegrationApiError } from './errors.js'
