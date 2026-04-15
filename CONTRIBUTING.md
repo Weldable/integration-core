@@ -17,13 +17,20 @@ Every integration repo (this one and all leaf packages) uses the same auto-publi
 
 **How it works:** on every push to `main`, the workflow compares the `version` field in `package.json` to the previous commit. If it changed, it builds, publishes to npm, creates a git tag, and opens a GitHub release. If it didn't change, the workflow exits without publishing.
 
-**To cut a release:**
+**To cut a release (maintainer):**
 
-1. Open a PR that bumps `version` in `package.json` to the new semver (e.g. `1.0.0` to `1.1.0`).
-2. Merge the PR.
+1. Bump `version` in `package.json` to the new semver (e.g. `1.0.0` to `1.1.0`).
+2. Commit and push directly to `main`.
 3. The workflow publishes automatically within ~1 minute.
 
+**To cut a release (contributor):**
+
+1. Open a PR that bumps `version` in `package.json`.
+2. After the PR is merged to `main` the workflow publishes automatically.
+
 That's it — no manual `npm publish`, no manual tagging.
+
+If you're using Claude Code, the `/commit` skill in `.claude/skills/commit.md` handles the version bump, build check, and push in one step.
 
 ## npm token
 
