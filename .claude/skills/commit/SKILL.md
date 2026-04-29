@@ -1,3 +1,10 @@
+---
+name: commit
+description: >
+  Commit and release this integration. Use when finalizing changes, bumping
+  the version, or publishing to npm.
+---
+
 # commit
 
 Stage, compose, and push a commit. If releasing, analyzes the diff to propose the appropriate semver bump with rationale — user approves before anything is written.
