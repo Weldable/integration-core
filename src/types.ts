@@ -120,6 +120,12 @@ export interface ActionContext {
   http: HttpClient
   /** Structured logging to the Weldable intent log */
   log: (message: string) => void
+  /**
+   * Idempotency key for this invocation, when the runtime provides one
+   * (derived from run id + step path). Actions that declare an
+   * idempotencyHeader send it on the request; safe to ignore otherwise.
+   */
+  idempotencyKey?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -178,6 +184,42 @@ export interface InputField {
   default?: unknown
   /** Required when type is 'enum' */
   options?: Array<{ label: string; value: string }>
+  /**
+   * When set, an authoring UI may render this field as a live picker whose
+   * options are produced by running a "lister" action (e.g. a spreadsheet-id
+   * field that auto-populates with the user's spreadsheets). The value written
+   * to the workflow is still a plain scalar (or an expression); `dynamic` only
+   * sources the option list. Runtime execution ignores this field entirely.
+   */
+  dynamic?: DynamicFieldSource
+  /**
+   * When true, editing this field invalidates dependent sibling fields' option
+   * caches (e.g. changing the spreadsheet should refresh the tab/range picker).
+   */
+  altersDynamicFields?: boolean
+}
+
+/**
+ * Declares how an authoring UI can fetch live options for an InputField by
+ * running a lister action. Purely advisory metadata — never used at runtime.
+ */
+export interface DynamicFieldSource {
+  /** Composite lister action id, e.g. 'google_drive.find', 'slack.list_channels'. */
+  action: string
+  /** Static args always passed to the lister, e.g. { type: 'spreadsheet' }. */
+  args?: Record<string, unknown>
+  /**
+   * Map of sibling field name -> lister arg name. The picker stays disabled
+   * until every referenced sibling has a value, so the lister is never called
+   * with a missing required argument.
+   */
+  argsFrom?: Record<string, string>
+  /** Dot-path to the options array in the lister's output (e.g. 'files', 'tabs'). */
+  optionsPath: string
+  /** Key on each option element used as the written value. */
+  valueKey: string
+  /** Key on each option element used as the label. Falls back to valueKey. */
+  labelKey?: string
 }
 
 export interface OutputField {
@@ -189,6 +231,18 @@ export interface OutputField {
 // ---------------------------------------------------------------------------
 // Auth config
 // ---------------------------------------------------------------------------
+
+/**
+ * Where and how the runtime injects the credential into requests.
+ * A declarative alternative to authHeaderPattern that also covers
+ * non-Authorization headers, query params, and basic auth.
+ * When absent, runtimes fall back to authHeaderPattern (Authorization header).
+ */
+export type AuthPlacement =
+  | { in: 'authorization'; pattern?: string } // Authorization header; pattern defaults to 'Bearer {token}'
+  | { in: 'header'; name: string; pattern?: string } // custom header; pattern defaults to '{token}'
+  | { in: 'query'; param: string } // token as a query parameter
+  | { in: 'basic' } // Authorization: Basic base64("<token>:")
 
 export type AuthConfig =
   | OAuthConfig
@@ -254,6 +308,12 @@ export interface IntegrationDef {
    * Only override for non-standard patterns (e.g., 'Bot {token}' for Discord).
    */
   authHeaderPattern?: string
+  /**
+   * Declarative credential placement (header name, query param, basic).
+   * Takes precedence over authHeaderPattern in runtimes that support it.
+   * Set by compileSpec() for spec-defined integrations.
+   */
+  authPlacement?: AuthPlacement
   /**
    * Platform only: env var for a shared app-level token (e.g., DISCORD_BOT_TOKEN).
    * When set, the runtime injects this env var as the auth token instead of user OAuth.

@@ -14,13 +14,35 @@ export type {
   HttpResponse,
   RequestOptions,
   InputField,
+  DynamicFieldSource,
   OutputField,
   AuthConfig,
+  AuthPlacement,
   OAuthConfig,
   ApiKeyConfig,
   NoAuthConfig,
   ConfigField,
 } from './types.js'
+
+// Declarative integration specs
+export {
+  IntegrationSpecSchema,
+  parseSpec,
+  SPEC_ID_RE,
+} from './spec.js'
+export type {
+  IntegrationSpec,
+  ActionSpec,
+  SpecRequest,
+  PaginationSpec,
+  CheckErrorSpec,
+  SpecAuth,
+  SpecIssue,
+  SpecIssueCode,
+  SpecParseResult,
+} from './spec.js'
+export { compileSpec, SpecCompileError } from './compile.js'
+export type { CompiledSpecIntegration } from './compile.js'
 
 // Errors
 export {

@@ -43,6 +43,17 @@ Every action is defined by an `ActionDef` object:
 
 See `src/types.ts` for the authoritative type definitions and `src/rest.ts` for REST handler internals.
 
+## Declarative integration specs
+
+An `IntegrationSpec` (`src/spec.ts`) is a pure-data JSON document describing an integration — auth, actions, request mapping, response reshaping — with **no code**. `compileSpec(spec)` (`src/compile.ts`) compiles it into the same `Integration` object `defineIntegration()` produces, so spec-defined integrations are indistinguishable from package-defined ones at the runtime boundary. This is the format AI-generated and user-supplied (BYO) integrations use; hand-written packages remain the surface for anything a spec cannot express.
+
+- Expressions are **JSONata only**: `{{ expr }}` spans in `bodyTemplate` evaluate against the action's args; `select`, `checkError`, pagination paths, and `connectionLabel.label` evaluate against `{ status, data, headers }`.
+- `parseSpec(input)` validates untrusted documents and returns stable issue codes (`spec-schema`, `spec-jsonata-syntax`, `spec-duplicate-action`, `spec-host`) designed for AI self-heal loops.
+- Compiled output carries `allowedHosts` (every hostname the spec may reach) for runtime egress enforcement, and `spec` (the source document) for inspection surfaces.
+- Pagination (`cursor`/`page`/`offset`/`link_header`), `idempotencyHeader`, per-action `baseUrl`, and `sampleOutput` mocks are declarative fields — do not add escape hatches that re-admit arbitrary code.
+
+Run `npm test` (vitest) after touching `spec.ts`/`compile.ts`; tests live in `src/compile.test.ts` and execute compiled specs against a mock HttpClient.
+
 ## Layout
 
 ```
